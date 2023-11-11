@@ -51,7 +51,7 @@ export const constantRoutes = [
         path: "dashboard",
         name: "Dashboard",
         component: () => import("@/views/dashboard/index"),
-        meta: { title: "Dashboard", icon: "dashboard" },
+        meta: { title: "主页", icon: "dashboard" },
       },
     ],
   },
@@ -84,9 +84,9 @@ export const constantRoutes = [
     children: [
       {
         path: "index",
-        name: "Form",
-        component: () => import("@/views/form/index"),
-        meta: { title: "Form", icon: "form" },
+        name: "Order",
+        component: () => import("@/views/individualOrder/index"),
+        meta: { title: "个人订单", icon: "form" },
       },
     ],
   },
