@@ -52,41 +52,25 @@ export const constantRoutes = [
         name: "Dashboard",
         component: () => import("@/views/dashboard/index"),
         meta: { title: "主页", icon: "dashboard" },
-      },
-    ],
-  },
-
-  {
-    path: "/example",
-    component: Layout,
-    redirect: "/example/table",
-    name: "Example",
-    meta: { title: "Example", icon: "el-icon-s-help" },
-    children: [
-      {
-        path: "table",
-        name: "Table",
-        component: () => import("@/views/table/index"),
-        meta: { title: "Table", icon: "table" },
+        // children: [
+        //   {
+        //     path: "details",
+        //     name: "details",
+        //     component: () => import("@/views/dashboard/details/index"),
+        //     meta: {
+        //       title: "车辆详情",
+        //     },
+        //   },
+        // ],
       },
       {
-        path: "tree",
-        name: "Tree",
-        component: () => import("@/views/tree/index"),
-        meta: { title: "Tree", icon: "tree" },
-      },
-    ],
-  },
-
-  {
-    path: "/form",
-    component: Layout,
-    children: [
-      {
-        path: "index",
-        name: "Order",
-        component: () => import("@/views/individualOrder/index"),
-        meta: { title: "个人订单", icon: "form" },
+        path: "details",
+        name: "details",
+        component: () => import("@/views/dashboard/details/index"),
+        meta: {
+          title: "车辆详情",
+        },
+        // hidden:true,
       },
     ],
   },
@@ -151,15 +135,50 @@ export const constantRoutes = [
       },
     ],
   },
+  {
+    path: "/example",
+    component: Layout,
+    redirect: "/example/table",
+    name: "Example",
+    meta: { title: "Example", icon: "el-icon-s-help" },
+    children: [
+      {
+        path: "table",
+        name: "Table",
+        component: () => import("@/views/table/index"),
+        meta: { title: "Table", icon: "table" },
+      },
+      {
+        path: "tree",
+        name: "Tree",
+        component: () => import("@/views/tree/index"),
+        meta: { title: "Tree", icon: "tree" },
+      },
+    ],
+  },
+  // 个人订单
+  {
+    path: "/form",
+    component: Layout,
+    children: [
+      {
+        path: "order",
+        name: "order",
+        component: () => import("@/views/individualOrder/index"),
+        meta: { title: "个人订单", icon: "form" },
+      },
+    ],
+  },
 
+  // 个人详情
   {
     path: "/userInfo",
     component: Layout,
     children: [
       {
-        path: "index",
+        path: "userInfo",
         name: "userInfo",
-        component:()=>import("@/views/userInfo/index"),
+        component: () => import("@/views/userInfo/index"),
         meta: { title: "个人详情", icon: "link" },
       },
     ],
