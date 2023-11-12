@@ -153,12 +153,14 @@ export const constantRoutes = [
   },
 
   {
-    path: "external-link",
+    path: "/userInfo",
     component: Layout,
     children: [
       {
-        path: "https://panjiachen.github.io/vue-element-admin-site/#/",
-        meta: { title: "External Link", icon: "link" },
+        path: "index",
+        name: "userInfo",
+        component:()=>import("@/views/userInfo/index"),
+        meta: { title: "个人详情", icon: "link" },
       },
     ],
   },

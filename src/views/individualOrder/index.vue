@@ -47,6 +47,7 @@
         </div>
       </div>
     </div>
+    
     <bottom
       ><div class="bottom-tab">
         <div class="shop-img">图片</div>
@@ -124,7 +125,7 @@ export default {
 }
 #number {
   position: absolute;
-  left: 50%;
+  left: 52%;
   bottom: 11%;
 }
 .num {
@@ -233,7 +234,7 @@ bottom {
 }
 #tips {
   position: absolute;
-  left: 62%;
+  left: 59%;
   bottom: 19%;
   color: rgb(114, 113, 113);
 }
