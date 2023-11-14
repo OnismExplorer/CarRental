@@ -52,16 +52,6 @@ export const constantRoutes = [
         name: "Dashboard",
         component: () => import("@/views/dashboard/index"),
         meta: { title: "主页", icon: "dashboard" },
-        // children: [
-        //   {
-        //     path: "details",
-        //     name: "details",
-        //     component: () => import("@/views/dashboard/details/index"),
-        //     meta: {
-        //       title: "车辆详情",
-        //     },
-        //   },
-        // ],
       },
       {
         path: "details",
@@ -75,90 +65,50 @@ export const constantRoutes = [
     ],
   },
 
+ 
+// 管理员查看
   {
-    path: "/nested",
+    path: "/admin",
     component: Layout,
-    redirect: "/nested/menu1",
-    name: "Nested",
+    redirect: "/admin/registration",
+    name: "Admin",
     meta: {
-      title: "Nested",
+      title: "管理员",
       icon: "nested",
     },
     children: [
       {
-        path: "menu1",
-        component: () => import("@/views/nested/menu1/index"), // Parent router-view
-        name: "Menu1",
-        meta: { title: "Menu1" },
-        children: [
-          {
-            path: "menu1-1",
-            component: () => import("@/views/nested/menu1/menu1-1"),
-            name: "Menu1-1",
-            meta: { title: "Menu1-1" },
-          },
-          {
-            path: "menu1-2",
-            component: () => import("@/views/nested/menu1/menu1-2"),
-            name: "Menu1-2",
-            meta: { title: "Menu1-2" },
-            children: [
-              {
-                path: "menu1-2-1",
-                component: () =>
-                  import("@/views/nested/menu1/menu1-2/menu1-2-1"),
-                name: "Menu1-2-1",
-                meta: { title: "Menu1-2-1" },
-              },
-              {
-                path: "menu1-2-2",
-                component: () =>
-                  import("@/views/nested/menu1/menu1-2/menu1-2-2"),
-                name: "Menu1-2-2",
-                meta: { title: "Menu1-2-2" },
-              },
-            ],
-          },
-          {
-            path: "menu1-3",
-            component: () => import("@/views/nested/menu1/menu1-3"),
-            name: "Menu1-3",
-            meta: { title: "Menu1-3" },
-          },
-        ],
+        path: "registration",
+        component: () => import("@/views/admin/registration/index"), 
+        name: "registration",
+        meta: { title: "查看车辆" },
+        
       },
       {
-        path: "menu2",
-        component: () => import("@/views/nested/menu2/index"),
-        name: "Menu2",
-        meta: { title: "menu2" },
-      },
-    ],
-  },
-  {
-    path: "/example",
-    component: Layout,
-    redirect: "/example/table",
-    name: "Example",
-    meta: { title: "Example", icon: "el-icon-s-help" },
-    children: [
-      {
-        path: "table",
-        name: "Table",
-        component: () => import("@/views/table/index"),
-        meta: { title: "Table", icon: "table" },
+        path: "add",
+        component: () => import("@/views/admin/registration/add/index"), 
+        name: "add",
+        meta: { title: "添加车辆" },
+        
       },
       {
-        path: "tree",
-        name: "Tree",
-        component: () => import("@/views/tree/index"),
-        meta: { title: "Tree", icon: "tree" },
+        path: "users",
+        component: () => import("@/views/admin/users/index"),
+        name: "users",
+        meta: { title: "查看用户" },
       },
+      {
+        path: "usersInfo",
+        component: () => import("@/views/admin/users/userInfo/index"),
+        name: "usersInfo",
+        meta: { title: "用户详情" },
+        // hidden:true,
+      }
     ],
   },
   // 个人订单
   {
-    path: "/form",
+    path: "/order",
     component: Layout,
     children: [
       {
