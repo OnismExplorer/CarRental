@@ -89,7 +89,7 @@ export const constantRoutes = [
         component: () => import("@/views/admin/registration/add/index"), 
         name: "add",
         meta: { title: "添加车辆" },
-        
+        hidden:true
       },
       {
         path: "users",

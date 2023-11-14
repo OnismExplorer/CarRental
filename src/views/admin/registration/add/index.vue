@@ -9,46 +9,57 @@
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
         >
-          <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar" />
+          <img v-if="form.avatar" :src="form.avatar" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
       <el-form-item label="车辆品牌" >
-        <el-input v-model="form.name" style="width: 400px;"></el-input>
+        <el-input v-model="form.brand" style="width: 400px;"></el-input>
       </el-form-item>
       <el-form-item label="车辆车系">
-        <el-input v-model="form.series" style="width: 400px;"></el-input>
+        <el-input v-model="form.model" style="width: 400px;"></el-input>
       </el-form-item>
       <el-form-item label="车辆数量">
-        <el-input v-model="form.num" style="width: 100px;"></el-input>
+        <el-input v-model="form.available" style="width: 100px;"></el-input>
       </el-form-item>
       <el-form-item label="日租金">
-        <el-input v-model="form.rent_days" style="width: 100px;"></el-input>
+        <el-input v-model="form.dailyRate" style="width: 100px;"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit" style="margin-bottom: 20px;">立即创建</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="retreat">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import {addCar} from '@/api/registration'
+
 export default {
   data() {
     return {
       form: {
         brand: "",
-        series: "",
-        num: "",
-        rent_days: "",
-        imageUrl: "",
+        model: "",
+        dailyRate: "",
+        avatar: "",
+        available:"",
       },
     };
   },
   methods: {
+    retreat() {
+      this.$router.push({path:'/admin/registration'})
+    },
     onSubmit() {
-      console.log("submit!");
+      addCar(this.form).then((res) => {
+        this.$message({
+          type: 'success',
+          message: res.message
+        })
+      })
+      this.$router.push({path:'/admin/registration'})
     },
     handleAvatarSuccess(res, file) {
       this.form.imageUrl = URL.createObjectURL(file.raw);
