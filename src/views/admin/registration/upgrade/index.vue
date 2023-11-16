@@ -12,6 +12,7 @@
           <img v-if="form.avatar" :src="form.avatar" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
+        <span class="tips">(点击图片可修改)</span>
       </el-form-item>
       <el-form-item label="车辆品牌" prop="brand">
         <el-input v-model="form.brand" style="width: 400px"></el-input>
@@ -26,8 +27,8 @@
         <el-input v-model="form.dailyRate" style="width: 100px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit" style="margin-bottom: 20px"
-          >立即创建</el-button
+        <el-button type="primary" @click="handleUpgrade" style="margin-bottom: 20px"
+          >完成修改</el-button
         >
         <el-button @click="retreat">取消</el-button>
       </el-form-item>
@@ -36,12 +37,13 @@
 </template>
 
 <script>
-import { addCar } from "@/api/registration";
+import { getDataById, upgradeCar } from "@/api/registration";
 
 export default {
   data() {
     return {
       form: {
+        id: "",
         brand: "",
         model: "",
         dailyRate: "",
@@ -68,17 +70,11 @@ export default {
       },
     };
   },
+  created() {
+    this.fetchDataById(this.$route.params.id);
+  },
   methods: {
     retreat() {
-      this.$router.push({ path: "/admin/registration" });
-    },
-    onSubmit() {
-      addCar(this.form).then((res) => {
-        this.$message({
-          type: "success",
-          message: res.message,
-        });
-      });
       this.$router.push({ path: "/admin/registration" });
     },
     handleAvatarSuccess(res, file) {
@@ -96,6 +92,20 @@ export default {
       }
       return isJPG && isLt2M;
     },
+    fetchDataById(id) {
+      getDataById(id).then((res) => {
+        this.form = res;
+      });
+    },
+    handleUpgrade() {
+      upgradeCar(this.form).then((res) => {
+        this.$message({
+          type: "success",
+          message: res.message,
+        });
+      });
+      this.router.push({ path: "/admin/registration" });
+    },
   },
 };
 </script>
@@ -111,6 +121,7 @@ export default {
   border-radius: 6px;
   cursor: pointer;
   position: relative;
+  top: 12px;
   overflow: hidden;
 }
 .avatar-uploader .avatar-uploader-icon:hover {
@@ -128,5 +139,12 @@ export default {
   width: 178px;
   height: 178px;
   display: block;
+}
+.tips {
+  margin: 0;
+  position: relative;
+  left: 220px;
+  top: -100px;
+  color: gray;
 }
 </style>

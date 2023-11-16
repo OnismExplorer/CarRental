@@ -22,3 +22,39 @@ export function logout() {
     method: "post",
   });
 }
+
+export function getUserData({ key, pageNum, pageSize }) {
+  return request({
+    url: "/admin/user/page",
+    method: "get",
+    params: { key, pageNum, pageSize },
+  });
+}
+
+export function getUserById(id) {
+  return request({
+    url: `/admin/user/${id}`,
+    method:'get'
+  })
+}
+
+export function removeById(id) {
+  return request({
+    url: `/admin/delete/user/${id}`,
+    method:'delete'
+  })
+}
+
+export function addUser() {
+  return request({
+    url: '/admin/save/user',
+    method:'post'
+  })
+}
+
+export function upgradeUser() {
+  return request({
+    url: '/admin/update/user',
+    method:'put'
+  })
+}

@@ -1,15 +1,29 @@
 <template>
-    <div class="user-container">
+  <div class="user-container">
     <div class="userinfo">
-      <el-avatar id="avatar" :size="95"> user </el-avatar>
+      <el-avatar
+        id="avatar"
+        :size="95"
+        :style="{ backgroundImage: 'url(' + userList.avatar + ')' }"
+      >
+        user
+      </el-avatar>
       <!-- 昵称可以再优化位置 -->
-      <div id="nickname">昵称</div>
+      <div id="nickname">{{ userList.nickname }}</div>
+      <el-button
+              type="primary"
+              class="editBtn"
+              size="mini"
+              plain
+              @click="toUpgrade(userList.id)"
+              >编辑</el-button
+            >
       <ul class="userList">
-        <li>用户名:</li>
+        <li>用户名:{{ userList.username }}</li>
         <li>密码: ********</li>
-        <li>用户地址：</li>
-        <li>邮箱地址:</li>
-        <li>用户类型：</li>
+        <li>用户地址：{{ userList.address }}</li>
+        <li>邮箱地址:{{ userList.email }}</li>
+        <li>用户类型：{{ userList.type }}</li>
       </ul>
     </div>
     <!-- 后期优化滚动条 -->
@@ -37,19 +51,50 @@
           待支付:
           <div>--</div>
         </div>
-        
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getUserById } from "@/api/user";
+
 export default {
-    
-}
+  data() {
+    return {
+      userList: [
+        {
+          username: "",
+          nickname: "",
+          avatar: "",
+          email: "",
+          type: "",
+        },
+      ],
+    };
+  },
+  created() {
+    this.fetchData(this.$route.params.id);
+  },
+  methods: {
+    fetchData(id) {
+      getUserById(id).then((res) => {
+        this.userList = res;
+      });
+    },
+    toUpgrade(id) {
+      this.$router.push({name:'upgradeUser',params:{id}})
+    }
+  },
+};
 </script>
 
 <style scoped>
+.editBtn{
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+}
 .user-container {
   width: 1200px;
   margin: auto;
@@ -96,7 +141,6 @@ export default {
 }
 .orderinfo {
   display: inline-block;
-  float: right;
   width: 68%;
   height: 600px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.32), 0 0 6px rgba(0, 0, 0, 0.1);
@@ -176,5 +220,4 @@ export default {
   width: 55px;
   height: 16px;
 }
-
 </style>

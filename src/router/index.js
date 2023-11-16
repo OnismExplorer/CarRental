@@ -60,13 +60,12 @@ export const constantRoutes = [
         meta: {
           title: "车辆详情",
         },
-        // hidden:true,
+        hidden: true,
       },
     ],
   },
 
- 
-// 管理员查看
+  // 管理员查看
   {
     path: "/admin",
     component: Layout,
@@ -79,17 +78,23 @@ export const constantRoutes = [
     children: [
       {
         path: "registration",
-        component: () => import("@/views/admin/registration/index"), 
+        component: () => import("@/views/admin/registration/index"),
         name: "registration",
         meta: { title: "查看车辆" },
-        
       },
       {
         path: "add",
-        component: () => import("@/views/admin/registration/add/index"), 
+        component: () => import("@/views/admin/registration/add/index"),
         name: "add",
         meta: { title: "添加车辆" },
-        hidden:true
+        hidden: true,
+      },
+      {
+        path: "upgrade",
+        component: () => import("@/views/admin/registration/upgrade/index"),
+        name: "upgrade",
+        meta: { title: "修改车辆" },
+        hidden: true,
       },
       {
         path: "users",
@@ -102,8 +107,23 @@ export const constantRoutes = [
         component: () => import("@/views/admin/users/userInfo/index"),
         name: "usersInfo",
         meta: { title: "用户详情" },
-        // hidden:true,
-      }
+        hidden: true,
+      },
+      {
+        path: "adduser",
+        component: () => import("@/views/admin/users/add/index"),
+        name: "adduser",
+        meta: { title: "新增用户" },
+        hidden: true,
+      },
+
+      {
+        path: "upgradeUser",
+        component: () => import("@/views/admin/users/upgrade/index"),
+        name: "upgradeUser",
+        meta: { title: "修改用户信息" },
+        hidden: true,
+      },
     ],
   },
   // 个人订单

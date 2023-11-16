@@ -14,7 +14,7 @@ export function pageList({key,pageNum,pageSize}) {
 
 export function removeById(id) {
     return request({
-        url: "/admin/delete/vehicle/{id}",
+        url: `/admin/delete/vehicle/${id}`,
         method: "delete",
     })
 }
@@ -27,4 +27,17 @@ export function addCar(car) {
     })
 }
 
-export function updateCar()
+export function upgradeCar(car) {
+    return request({
+        url: "/admin/update/vehicle",
+        method: "put",
+        data:car,
+    })
+}
+
+export function getDataById(id) {
+    return request({
+        url: `/vehicle/${id}`,
+        method: "get",
+    })
+}

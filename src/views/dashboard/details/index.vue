@@ -1,26 +1,29 @@
 <template>
   <div class="details-container">
-    <div class="car-img">图片</div>
+    <div
+      class="car-img"
+      :style="{ backgroundImage: 'url(' + form.avatar + ')' }"
+    ></div>
     <div class="info">
-      <span id="CarName">奥迪-奥迪A4L 2018款 30周年年型</span>
+      <span id="CarName">{{ form.brand + '-' + form.model + '-' + form.illustrate }}</span>
       <div id="car-stores">
         库存:
-        <div>11</div>
+        <div>{{ form.available }}</div>
       </div>
       <div id="amount">
         价格：
-        <div>10</div>
+        <div>{{ form.dailyRate }}</div>
       </div>
       <div id="vip-amount">
         会员价：
         <div>100</div>
       </div>
-      <el-button type="danger" id="pay">加入购物车</el-button>
+      <el-button type="danger" id="pay" @click="addToshoppingCart">加入购物车</el-button>
       <div class="useless">
         <ul>
           <li>服务 <span>支持上门取车</span></li>
           <li>5.0分<span>暂无评价</span></li>
-          <li>取车地点<span>明理楼c区1004处</span></li>
+          <li>取车地点<span>明理楼c区1006处</span></li>
         </ul>
       </div>
     </div>
@@ -28,17 +31,45 @@
 </template>
 
 <script>
-export default {};
+import { getDataById } from "@/api/registration";
+
+export default {
+  data() {
+    return {
+      form: {
+        id: "",
+        avatar: "",
+        dailyRate: "",
+        available: "",
+      },
+    };
+  },
+  created() {
+    this.fetchData(this.$route.params.id);
+  },
+  methods: {
+    fetchData(id) {
+      getDataById(id).then((res) => {
+        this.form = res;
+      });
+    },
+    addToshoppingCart() {
+      
+    }
+  },
+};
 </script>
 
 <style scoped>
 .car-img {
   display: inline-block;
-  float: left;
   width: 530px;
   height: 441px;
   margin: 81px 60px 0 37px;
-  background-color: darkcyan;
+  background: url("https://fingerbed.oss-cn-chengdu.aliyuncs.com/CSDN/202311031104822.png")
+    no-repeat center;
+  background-size: 491px 441px;
+  transition: background-size 3s;
 }
 .info {
   display: inline-block;
@@ -106,7 +137,7 @@ export default {};
   right: 12px;
   bottom: 8px;
 }
-.useless{
+.useless {
   position: relative;
   top: 150px;
   left: 0;
@@ -114,19 +145,19 @@ export default {};
   height: 100px;
   padding-right: 45px;
 }
-.useless ul{
+.useless ul {
   list-style: none;
 }
-.useless ul li{
+.useless ul li {
   height: 50px;
   width: 100%;
   border-bottom: rgb(190, 189, 189) solid 1px;
   line-height: 50px;
   font-weight: 700;
 }
-.useless ul li span{
+.useless ul li span {
   float: right;
   font-weight: normal;
-  color:gray;
+  color: gray;
 }
 </style>

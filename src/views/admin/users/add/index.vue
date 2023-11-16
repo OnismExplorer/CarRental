@@ -1,7 +1,7 @@
 <template>
   <div class="add-contain">
     <el-form ref="form" :model="form" label-width="80px" :rules="rules">
-      <el-form-item label="车辆图片">
+      <el-form-item label="用户头像">
         <el-upload
           class="avatar-uploader"
           action="https://jsonplaceholder.typicode.com/posts/"
@@ -13,18 +13,22 @@
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="车辆品牌" prop="brand">
-        <el-input v-model="form.brand" style="width: 400px"></el-input>
+      <el-form-item label="用户名" prop="userName">
+        <el-input v-model="form.userName" style="width: 400px"></el-input>
       </el-form-item>
-      <el-form-item label="车辆车系" prop="model">
+      <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.model" style="width: 400px"></el-input>
       </el-form-item>
-      <el-form-item label="车辆数量" prop="num">
-        <el-input v-model="form.available" style="width: 100px"></el-input>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="form.available" style="width: 300px"></el-input>
       </el-form-item>
-      <el-form-item label="日租金" prop="rentdaily">
+      <el-form-item label="用户类型" prop="type">
         <el-input v-model="form.dailyRate" style="width: 100px"></el-input>
       </el-form-item>
+      <el-form-item label="地址" prop="address">
+        <el-input v-model="form.dailyRate" style="width: 100px"></el-input>
+      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" @click="onSubmit" style="margin-bottom: 20px"
           >立即创建</el-button
@@ -36,50 +40,52 @@
 </template>
 
 <script>
-import { addCar } from "@/api/registration";
+import { addUser } from "@/api/user";
 
 export default {
   data() {
     return {
       form: {
-        brand: "",
-        model: "",
-        dailyRate: "",
+        userName: "",
+        password: "",
+        nickname: "",
         avatar: "",
-        available: "",
+        email: "",
+        type: 0,
+        address: "",
       },
       rules: {
-        brand: [
-          { required: true, message: "请输入品牌名称", trigger: "blur" },
+        userName: [
+          { required: true, message: "请输入用户名称", trigger: "blur" },
+          { min: 2, message: "至少两个字！", trigger: "blur" },
+        ],
+        nickname: [
+          { required: true, message: "请输入昵称", trigger: "blur" },
           { min: 1, message: "不能为空！", trigger: "blur" },
         ],
-        model: [
-          { required: true, message: "请输入车型名称", trigger: "blur" },
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, max: 99, message: "至少六位数！", trigger: "blur" },
+        ],
+        type: [
+          { required: true, message: "请输入用户类型", trigger: "blur" },
           { min: 1, message: "不能为空！", trigger: "blur" },
-        ],
-        num:[
-          { required: true, message: "请输入车辆数量", trigger: "blur" },
-          { min: 1, max:99,message: "不能为零！", trigger: "blur" },
-        ],
-        rentdaily:[
-          { required: true, message: "请输入车辆数量", trigger: "blur" },
-          { min: 1,message: "不能为零！", trigger: "blur" },
         ],
       },
     };
   },
   methods: {
     retreat() {
-      this.$router.push({ path: "/admin/registration" });
+      this.$router.push({ path: "/admin/users" });
     },
     onSubmit() {
-      addCar(this.form).then((res) => {
+      addUser(this.form).then((res) => {
         this.$message({
           type: "success",
           message: res.message,
         });
       });
-      this.$router.push({ path: "/admin/registration" });
+      this.$router.push({ path: "/admin/users" });
     },
     handleAvatarSuccess(res, file) {
       this.form.imageUrl = URL.createObjectURL(file.raw);

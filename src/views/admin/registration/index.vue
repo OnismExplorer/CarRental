@@ -1,10 +1,12 @@
 <template>
   <div class="registration-container">
     <div class="cargo">
-      <el-button type="primary" class="createBtn" @click="toCreate">创建车辆</el-button>
+      <el-button type="primary" class="createBtn" @click="toCreate"
+        >创建车辆</el-button
+      >
       <ul>
         <li>
-          <div class="list-item" v-for="(item, index) in list" :key="index">
+          <div class="list-item" v-for="(item, index) in pageList" :key="index">
             <div
               id="car-picture"
               :style="{ backgroundImage: 'url(' + item.avatar + ')' }"
@@ -17,7 +19,12 @@
               价格：
               <div>{{ item.dailyRate }}元</div>
             </div>
-            <el-button type="primary" class="editBtn" size="mini" plain
+            <el-button
+              type="primary"
+              class="editBtn"
+              size="mini"
+              plain
+              @click="toUpgrade(item.id)"
               >编辑</el-button
             >
             <el-button
@@ -31,6 +38,18 @@
           </div>
         </li>
       </ul>
+      <div class="block">
+        <el-pagination
+          layout="prev, pager, next"
+          :page-size="6"
+          :current-page="page"
+          :page-count="pageCount"
+          @current-change="changeCurrentPage"
+          @next-click="changeSize(1)"
+          @prev-click="changeSize(-1)"
+        >
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -43,8 +62,10 @@ export default {
     return {
       keyWords: "",
       page: 1,
-      pageSize: 10,
+      pageSize: 6,
       departmentId: null,
+      total: 0,
+      pageCount: 0,
       list: [
         {
           id: "",
@@ -55,6 +76,7 @@ export default {
           illustrate: "",
         },
       ],
+      pageList: [],
     };
   },
   created() {
@@ -67,11 +89,11 @@ export default {
         pageNum: this.page,
         pageSize: this.pageSize,
       }).then((res) => {
-        res.list.forEach((item) => {
-          this.list.push(item);
-        });
+        this.total = res.total;
+        this.pageCount = Math.ceil(this.total / this.pageSize);
         this.list.shift();
-        console.log(this.list[0].avatar);
+        this.list = res.list;
+        this.changeCurrentPage();
       });
     },
     handleDele(id) {
@@ -83,16 +105,30 @@ export default {
         .then(() => {
           return removeById(id);
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
+        .then((res) => {
+          this.fetchData();
+          // this.$message.success(res.message)
         });
     },
     toCreate() {
-      this.$router.push({path:'/admin/add'})
-    }
+      this.$router.push({ path: "/admin/add" });
+    },
+    toUpgrade(id) {
+      this.$router.push({ name: "upgrade", params: { id } });
+    },
+    changeCurrentPage() {
+      let startItem = (this.page - 1) * this.pageSize;
+      let endItem = this.page * this.pageSize;
+      this.pageList = this.list;
+    },
+    // 当总页数只有1的时候会出问题
+    changeSize(num) {
+      this.page = this.page + num;
+      // if (this.page == this.pageCount) {
+      //   this.pageSize = this.total - this.page * this.pageSize;
+      // } else this.pageSize = 6;
+      this.fetchData();
+    },
   },
 };
 </script>
@@ -101,7 +137,7 @@ export default {
 .cargo {
   position: relative;
   width: 80%;
-  height: 500px;
+  height: 600px;
   margin: 90px auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.32), 0 0 6px rgba(0, 0, 0, 0.14);
 }
@@ -132,11 +168,9 @@ export default {
   position: relative;
   width: 100%;
   height: 80px;
-  border-bottom: rgb(178, 177, 177) solid 1px;
-}
-.list-item:first-of-type {
   border-top: rgb(178, 177, 177) solid 1px;
 }
+
 #car-picture {
   display: inline-block;
   width: 12%;
@@ -178,5 +212,10 @@ export default {
   width: 60px;
   height: 40px;
   color: black;
+}
+.block {
+  position: absolute;
+  bottom: 0%;
+  left: 38%;
 }
 </style>
