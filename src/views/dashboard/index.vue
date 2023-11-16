@@ -125,7 +125,7 @@ export default {
         },
       ],
       pagelist: [],
-      order: ["升序排序", "降序排序"],
+      order: ["价格升序", "价格降序"],
       colTytpe: {
         brand: ["不限", "大众", "仪器", "宝马"],
         car_series: ["不限", "dao", "sjdhI"],

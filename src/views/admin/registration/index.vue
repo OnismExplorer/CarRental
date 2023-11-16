@@ -107,7 +107,7 @@ export default {
         })
         .then((res) => {
           this.fetchData();
-          // this.$message.success(res.message)
+          this.$message.success(res.message)
         });
     },
     toCreate() {

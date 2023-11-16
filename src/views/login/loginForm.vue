@@ -21,7 +21,7 @@
             d="M4 15h2v5h12V4H6v5H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6zm6-4V8l5 4-5 4v-3H2v-2h8z"
           ></path>
         </svg>
-        <h1 class="form_heading">注册</h1>
+        <button class="form_heading">注册</button>
       </div>
       <div class="field" prop="username">
         <label for="username">用户名</label>
@@ -174,14 +174,21 @@ $dark_gray: #889aa4;
   color: #7878bd;
   margin-bottom: 20px;
   margin-right: 5px;
+  
 }
 
 .form_heading {
+  position: relative;
+  top:-10px;
   padding-bottom: 20px;
   font-size: 21px;
   color: #7878bd;
+  background-color: transparent;
 }
-
+.form_heading:hover{
+  background-color: transparent;
+  cursor: pointer;
+}
 .field {
   padding-bottom: 10px;
   .show-pwd {

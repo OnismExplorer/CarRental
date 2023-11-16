@@ -1,53 +1,64 @@
 <template>
   <div class="order-container">
     <div class="order-list">
-      <div class="list-item">
+      <div class="list-item" v-for="(item, index) in list" :key="index">
         <el-button
           type="danger"
           icon="el-icon-close"
           plain
           class="cancel"
+          @click="cancel(item.id)"
         ></el-button>
-        <div id="car-picture">图片</div>
-        <span id="CarName">奥迪-奥迪A4L 2018款 30周年年型</span>
+        <div
+          id="car-picture"
+          :style="{ backgroundImage: 'url(' + item.avatar + ')' }"
+        >
+          图片
+        </div>
+        <span id="CarName">{{
+          item.brand + "-" + item.model + "-" + item.illustrate
+        }}</span>
 
         <div id="car-stores">
           库存:
-          <div>11</div>
+          <div>{{ item.available }}</div>
         </div>
 
         <div class="block">
           <span class="demonstration">租用日期</span>
           <el-date-picker
-            v-model="value1"
+            v-model="item.day"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            @blur="changeDate(index,item.day)"
           >
           </el-date-picker>
         </div>
 
-        <div id="number">
+        <!-- <div id="number">
           租用数量
-          <el-input-number
-            size="mini"
-            v-model="num4"
-            class="num"
-          ></el-input-number>
-        </div>
+          
+        </div> -->
 
         <div id="amount">
           价格：
-          <div>10</div>
+          <div>{{ item.dailyRate }}</div>
         </div>
         <div id="vip-amount">
           会员价：
           <div>100</div>
         </div>
+        <el-button
+          type="primary"
+          class="confirm"
+          @click="confirm(item.id, item.start, item.end)"
+          >确认</el-button
+        >
       </div>
     </div>
-    
+
     <bottom
       ><div class="bottom-tab">
         <div class="shop-img">图片</div>
@@ -70,11 +81,71 @@
 </template>
 
 <script>
+import { removeOrder, getOrderById, changeOrder } from "@/api/details";
+import { getDataById } from "@/api/registration";
+
 export default {
   data() {
     return {
-      num4: 1,
+      list: [
+        {
+          id: "",
+          start: "",
+          end: "",
+          brand: "",
+          model: "",
+          dailyRate: "",
+          avatar: "",
+          available: "",
+        },
+      ],
+      amount: 0,
     };
+  },
+  created() {
+    this.fetchData();
+  },
+  methods: {
+    fetchData() {
+      // 需要获取用户uid
+      getOrderById(uid).then((res) => {
+        this.list = res;
+      });
+      this.list.forEach((obj) => {
+        obj.day = '';
+        getDataById(obj.id).then((res) => {
+          obj = { ...res };
+        });
+      });
+    },
+    cancel(id) {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          return removeOrder(id);
+        })
+        .then((res) => {
+          this.fetchData();
+          this.$message.success(res.message);
+        });
+      this.fetchData();
+    },
+    confirm(id, start, end) {
+      changeOrder({ id, start, end }).then((res) => {
+        this.$message({
+          type: "success",
+          message: res.message,
+        });
+      });
+      this.fetchData();
+    },
+    changeDate(index,day) {
+      this.list[index].start = day[0];
+      this.list[index].end = day[1];
+    },
   },
 };
 </script>
@@ -93,7 +164,10 @@ export default {
   display: inline-block;
   width: 16%;
   height: 100%;
-  background-color: burlywood;
+  background: url("https://fingerbed.oss-cn-chengdu.aliyuncs.com/CSDN/202311031104822.png")
+    no-repeat center;
+  background-size: 150px 150px;
+  transition: background-size 3s;
 }
 #CarName {
   position: absolute;
@@ -120,8 +194,8 @@ export default {
   left: 18%;
   bottom: 4%;
 }
-.demonstration{
-    margin-right: 15px;
+.demonstration {
+  margin-right: 15px;
 }
 #number {
   position: absolute;
@@ -140,7 +214,7 @@ export default {
 }
 #amount {
   position: absolute;
-  right: 15%;
+  right: 25%;
   bottom: 7%;
   color: black;
   font-weight: 700;
@@ -159,7 +233,7 @@ export default {
 }
 #vip-amount {
   position: absolute;
-  right: 7%;
+  right: 17%;
   bottom: 7%;
   color: rgb(217, 68, 68);
   font-weight: 700;
@@ -170,6 +244,11 @@ export default {
   bottom: -8px;
   font-size: 40px;
   font-weight: normal;
+}
+.confirm {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
 }
 bottom {
   position: fixed;

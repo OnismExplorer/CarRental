@@ -5,7 +5,9 @@
       :style="{ backgroundImage: 'url(' + form.avatar + ')' }"
     ></div>
     <div class="info">
-      <span id="CarName">{{ form.brand + '-' + form.model + '-' + form.illustrate }}</span>
+      <span id="CarName">{{
+        form.brand + "-" + form.model + "-" + form.illustrate
+      }}</span>
       <div id="car-stores">
         库存:
         <div>{{ form.available }}</div>
@@ -18,7 +20,27 @@
         会员价：
         <div>100</div>
       </div>
-      <el-button type="danger" id="pay" @click="addToshoppingCart">加入购物车</el-button>
+      <div class="block">
+        <span class="demonstration">租用日期</span>
+        <el-date-picker
+          v-model="day"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          @blur="changeDate"
+        >
+        </el-date-picker>
+      </div>
+      <div id="number">
+        租用数量
+        <el-input-number
+          size="mini"
+          v-model="num4"
+          class="num"
+        ></el-input-number>
+      </div>
+      <el-button type="danger" id="pay" @click="addOrder">加入订单</el-button>
       <div class="useless">
         <ul>
           <li>服务 <span>支持上门取车</span></li>
@@ -32,6 +54,7 @@
 
 <script>
 import { getDataById } from "@/api/registration";
+import { createOrder } from "@/api/details";
 
 export default {
   data() {
@@ -42,6 +65,9 @@ export default {
         dailyRate: "",
         available: "",
       },
+      day: "",
+      start: "",
+      end: "",
     };
   },
   created() {
@@ -53,9 +79,22 @@ export default {
         this.form = res;
       });
     },
-    addToshoppingCart() {
-      
-    }
+    addOrder() {
+      createOrder({
+        vehicleId: form.id,
+        start: this.start,
+        end: this.end,
+      }).then((res) => {
+        this.$message({
+          type: "success",
+          message: res.message,
+        });
+      });
+    },
+    changeDate() {
+      this.start = this.day[0];
+      this.end = this.day[1];
+    },
   },
 };
 </script>
@@ -74,9 +113,10 @@ export default {
 .info {
   display: inline-block;
   position: relative;
+  top: -294px;
   width: 590px;
   height: 441px;
-  margin-top: 81px;
+
   /* background-color: wheat; */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.32), 0 0 6px rgba(0, 0, 0, 0.14);
 }
@@ -159,5 +199,21 @@ export default {
   float: right;
   font-weight: normal;
   color: gray;
+}
+.block {
+  position: absolute;
+  bottom: 8px;
+  left: 34px;
+}
+.demonstration {
+  margin-right: 12px;
+}
+#number {
+  position: absolute;
+  bottom: 71px;
+  left: 34px;
+}
+.num {
+  margin-left: 12px;
 }
 </style>
