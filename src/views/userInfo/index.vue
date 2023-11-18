@@ -1,26 +1,35 @@
 <template>
   <div class="user-container">
     <div class="userinfo">
-      <el-avatar id="avatar" :size="95"> user </el-avatar>
+      <el-avatar
+        id="avatar"
+        :size="95"
+        :style="{ backgroundImage: 'url(' + userList.avatar + ')' }"
+      >
+        user
+      </el-avatar>
       <!-- 昵称可以再优化位置 -->
-      <div id="nickname">昵称</div>
+      <div id="nickname">{{ userList.nickname }}</div>
+
       <ul class="userList">
-        <li>用户名:</li>
+        <li>用户名:{{ userList.userName }}</li>
         <li>密码: ********</li>
-        <li>用户地址：</li>
-        <li>邮箱地址:</li>
-        <li>用户类型：</li>
+        <li>用户地址：{{ userList.address }}</li>
+        <li>邮箱地址:{{ userList.email }}</li>
+        <li>用户类型：{{ userList.type }}</li>
       </ul>
     </div>
     <!-- 后期优化滚动条 -->
     <div class="orderinfo">
-      <div class="list-item">
-        <div id="car-picture">图片</div>
-        <span id="CarName">奥迪-奥迪A4L 2018款 30周年年型</span>
+      <div class="list-item" v-for="(item,index) in carList" :key="index">
+        <div id="car-picture" :style="{ backgroundImage: 'url(' + item.avatar + ')' }"></div>
+        <span id="CarName">{{
+          item.brand + "-" + item.model + "-" + item.illustrate
+        }}</span>
 
         <div class="block">
           还车日期:
-          <div>yy-mm--dd</div>
+          <div>{{ item.end }}</div>
         </div>
 
         <div id="number">
@@ -30,24 +39,90 @@
 
         <div id="amount">
           价格：
-          <div>10</div>
+          <div>{{ item.dailyRate }}</div>
         </div>
 
         <div class="unpaid">
           待支付:
           <div>--</div>
         </div>
-        <el-button type="danger" id="pay" size="mini">支付</el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import { getUserById } from "@/api/user";
+import { getDataById } from "@/api/registration";
+import { getOrderById} from "@/api/individualOrder";
+
+export default {
+  data() {
+    return {
+      userList: [
+        {
+          id: "",
+          userName: "",
+          nickname: "",
+          avatar: "",
+          email: "",
+          type: "",
+        },
+      ],
+      carList: [
+        {
+          id: "",
+          brand: "",
+          model: "",
+          license: "",
+          type: 0,
+          dailyRate: 0,
+          illustrate: "",
+          avatar: "",
+          available: 0,
+          inventory: 0,
+          end:""
+        },
+      ],
+      list:[]
+    };
+  },
+  created() {
+    this.fetchData(this.$store.getters.id);
+  },
+  methods: {
+    fetchData(id) {
+      getUserById(id)
+        .then((res) => {
+          this.userList = res;
+          if (this.userList.type == 0) this.userList.type = "管理员";
+          else if (this.userList.type == 1) this.userList.type = "vip会员";
+          else this.userList.type = "普通用户";
+        })
+        .then(() => {
+          getOrderById(id).then((res) => {
+            this.list = res;
+            this.list.forEach((obj) => {
+              getDataById(obj.vehicleId).then((res) => {
+                let data = res
+                data.end=obj.end
+                this.carList.push(data);
+                // obj = { ...res };
+              });
+            });
+          });
+        });
+    },
+  },
+};
 </script>
 
 <style scoped>
+.editBtn {
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+}
 .user-container {
   width: 1200px;
   margin: auto;
@@ -86,6 +161,7 @@ export default {};
 .userinfo {
   display: inline-block;
   position: relative;
+  top: -179px;
   width: 30%;
   height: 420px;
   margin-right: 20px;
@@ -94,9 +170,8 @@ export default {};
 }
 .orderinfo {
   display: inline-block;
-  float: right;
   width: 68%;
-  height: 600px;
+  
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.32), 0 0 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -111,7 +186,10 @@ export default {};
   display: inline-block;
   width: 18%;
   height: 100%;
-  background-color: burlywood;
+  background: url("https://fingerbed.oss-cn-chengdu.aliyuncs.com/CSDN/202311031104822.png")
+    no-repeat center;
+  background-size: 150px 120px;
+  transition: background-size 3s;
 }
 #CarName {
   position: absolute;
@@ -127,10 +205,11 @@ export default {};
   font-size: 14px;
 }
 .block div {
+  overflow: hidden;
   position: absolute;
   left: 117%;
   bottom: 10%;
-  width: 70px;
+  width: 76px;
   height: 14px;
 }
 #number {
@@ -173,11 +252,5 @@ export default {};
   bottom: 10%;
   width: 55px;
   height: 16px;
-}
-
-#pay {
-  position: absolute;
-  right: 19px;
-  bottom: 8px;
 }
 </style>

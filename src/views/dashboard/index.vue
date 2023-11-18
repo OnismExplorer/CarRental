@@ -9,9 +9,10 @@
           fill="orange"
           size="mini"
           style="margin-left: 20px"
+          @change="selectedChange"
         >
           <el-radio-button
-            v-for="(item, index) in colTytpe.brand"
+            v-for="(item, index) in colType.brand"
             :key="index"
             style="margin-left: 10px"
             :label="item"
@@ -26,9 +27,10 @@
           fill="orange"
           size="mini"
           style="margin-left: 20px"
+          @change="selectedChange"
         >
           <el-radio-button
-            v-for="(item, index) in colTytpe.car_series"
+            v-for="(item, index) in colType.car_series"
             :key="index"
             style="margin-left: 10px"
             :label="item"
@@ -37,20 +39,12 @@
       </div>
       <div class="col">
         日租金：
-        <el-radio-group
+        <el-input-number
           v-model="radio3"
-          text-color="#ffffff"
-          fill="orange"
-          size="mini"
-          style="margin-left: 6px"
-        >
-          <el-radio-button
-            v-for="(item, index) in colTytpe.price"
-            :key="index"
-            style="margin-left: 10px"
-            :label="item"
-          ></el-radio-button>
-        </el-radio-group>
+          :step="100"
+          @change="selectedChange"
+        ></el-input-number>
+        以下
       </div>
       <div class="col order">
         排序：
@@ -60,6 +54,7 @@
           fill="rgb(255, 94, 0)"
           size="mini"
           style="margin-left: 20px"
+          @change="orderChange"
         >
           <el-radio-button
             v-for="(item, index) in order"
@@ -99,6 +94,7 @@
 <script>
 import CarInfo from "./CarInfo.vue";
 import { pageList } from "@/api/registration";
+import { getAllData } from "@/api/dashboard";
 
 export default {
   name: "Dashboard",
@@ -107,7 +103,7 @@ export default {
     return {
       radio1: "不限",
       radio2: "不限",
-      radio3: "不限",
+      radio3: 0,
       radio4: "价格升序",
       key: "",
       page: 1,
@@ -124,11 +120,12 @@ export default {
           pageSize: 6,
         },
       ],
+      allList: [],
       pagelist: [],
       order: ["价格升序", "价格降序"],
-      colTytpe: {
-        brand: ["不限", "大众", "仪器", "宝马"],
-        car_series: ["不限", "dao", "sjdhI"],
+      colType: {
+        brand: ["不限"],
+        car_series: ["不限"],
       },
     };
   },
@@ -148,6 +145,8 @@ export default {
         this.pageCount = Math.ceil(res.total / this.pageSize);
         this.list.shift();
         this.list = res.list;
+        this.handlecolType();
+        this.orderChange();
       });
     },
     changeCurrentPage() {
@@ -161,6 +160,77 @@ export default {
       //   this.pageSize = this.total - this.page * this.pageSize;
       // } else this.pageSize = 6;
       this.fetchData();
+    },
+    handlecolType() {
+      getAllData().then((res) => {
+        this.allList = res;
+        this.allList.forEach((item) => {
+          if (this.colType.brand.indexOf(item.brand) == -1) {
+            this.colType.brand.push(item.brand);
+          }
+          if (this.colType.car_series.indexOf(item.model) == -1) {
+            this.colType.car_series.push(item.model);
+          }
+        });
+      });
+    },
+    selectedChange() {
+      if (this.radio1 == "不限" && this.radio2 == "不限") {
+        this.list = this.allList;
+      } else if (this.radio1 == "不限") {
+        this.list = [];
+        this.allList.forEach((item) => {
+          if (item.model == this.radio2) {
+            this.list.push(item);
+          }
+        });
+      } else if (this.radio2 == "不限") {
+        this.list = [];
+        this.allList.forEach((item) => {
+          if (item.brand == this.radio1) {
+            this.list.push(item);
+          }
+        });
+      } else {
+        this.list = [];
+        this.allList.forEach((item) => {
+          if (item.model == this.radio2 && item.brand == this.radio1) {
+            this.list.push(item);
+          }
+        });
+      }
+      if (this.radio3 != 0) {
+        let tem = this.list;
+        this.list = [];
+        tem.forEach((item) => {
+          if (item.dailyRate < this.radio3) {
+            this.list.push(item);
+          }
+        });
+      }
+      this.orderChange();
+      if (this.list.length == 0) {
+        alert("没有满足条件的车辆，请重新选择");
+      }
+    },
+    orderChange() {
+      if (this.list.length != 0) {
+        for (let i = this.list.length - 1; i >= 0; i--) {
+          for (let j = 0; j < i; j++) {
+            if (this.list[j].dailyRate > this.list[j + 1].dailyRate) {
+              let tem = this.list[j + 1];
+              this.list[j + 1] = this.list[j];
+              this.list[j] = tem;
+            }
+          }
+        }
+        if (this.radio4 != "价格升序") {
+          this.list.reverse();
+        } else {
+          let m = this.list.reverse();
+          this.list=m.reverse()
+        }
+      }
     },
   },
 };
@@ -197,7 +267,7 @@ export default {
   width: 1200px;
   height: 760px;
 }
-.block{
+.block {
   position: absolute;
   bottom: 0;
   left: 40%;

@@ -11,15 +11,15 @@
       <!-- 昵称可以再优化位置 -->
       <div id="nickname">{{ userList.nickname }}</div>
       <el-button
-              type="primary"
-              class="editBtn"
-              size="mini"
-              plain
-              @click="toUpgrade(userList.id)"
-              >编辑</el-button
-            >
+        type="primary"
+        class="editBtn"
+        size="mini"
+        plain
+        @click="toUpgrade(userList.id)"
+        >编辑</el-button
+      >
       <ul class="userList">
-        <li>用户名:{{ userList.username }}</li>
+        <li>用户名:{{ userList.userName }}</li>
         <li>密码: ********</li>
         <li>用户地址：{{ userList.address }}</li>
         <li>邮箱地址:{{ userList.email }}</li>
@@ -28,13 +28,18 @@
     </div>
     <!-- 后期优化滚动条 -->
     <div class="orderinfo">
-      <div class="list-item">
-        <div id="car-picture">图片</div>
-        <span id="CarName">奥迪-奥迪A4L 2018款 30周年年型</span>
+      <div class="list-item" v-for="(item, index) in carList" :key="index">
+        <div
+          id="car-picture"
+          :style="{ backgroundImage: 'url(' + item.avatar + ')' }"
+        ></div>
+        <span id="CarName">{{
+          item.brand + "-" + item.model + "-" + item.illustrate
+        }}</span>
 
         <div class="block">
           还车日期:
-          <div>yy-mm--dd</div>
+          <div>{{ item.end }}</div>
         </div>
 
         <div id="number">
@@ -44,7 +49,7 @@
 
         <div id="amount">
           价格：
-          <div>10</div>
+          <div>{{ item.dailyRate }}</div>
         </div>
 
         <div class="unpaid">
@@ -58,19 +63,38 @@
 
 <script>
 import { getUserById } from "@/api/user";
+import { getDataById } from "@/api/registration";
+import { getOrderById } from "@/api/individualOrder";
 
 export default {
   data() {
     return {
       userList: [
         {
-          username: "",
+          id: "",
+          userName: "",
           nickname: "",
           avatar: "",
           email: "",
           type: "",
         },
       ],
+      carList: [
+        {
+          id: "",
+          brand: "",
+          model: "",
+          license: "",
+          type: 0,
+          dailyRate: 0,
+          illustrate: "",
+          avatar: "",
+          available: 0,
+          inventory: 0,
+          end: "",
+        },
+      ],
+      list: [],
     };
   },
   created() {
@@ -78,19 +102,36 @@ export default {
   },
   methods: {
     fetchData(id) {
-      getUserById(id).then((res) => {
-        this.userList = res;
-      });
+      getUserById(id)
+        .then((res) => {
+          this.userList = res;
+          if (this.userList.type == 0) this.userList.type = "管理员";
+          else if (this.userList.type == 1) this.userList.type = "vip会员";
+          else this.userList.type = "普通用户";
+        })
+        .then(() => {
+          getOrderById(this.userList.id).then((res) => {
+            this.list = res;
+            this.list.forEach((obj) => {
+              getDataById(obj.vehicleId).then((res) => {
+                let data = res;
+                data.end = obj.end;
+                this.carList.push(data);
+                // obj = { ...res };
+              });
+            });
+          });
+        });
     },
     toUpgrade(id) {
-      this.$router.push({name:'upgradeUser',params:{id}})
-    }
+      this.$router.push({ name: "upgradeUser", params: { id } });
+    },
   },
 };
 </script>
 
 <style scoped>
-.editBtn{
+.editBtn {
   float: right;
   margin-top: 10px;
   margin-right: 10px;
@@ -133,6 +174,7 @@ export default {
 .userinfo {
   display: inline-block;
   position: relative;
+  top: -179px;
   width: 30%;
   height: 420px;
   margin-right: 20px;
@@ -157,7 +199,10 @@ export default {
   display: inline-block;
   width: 18%;
   height: 100%;
-  background-color: burlywood;
+  background: url("https://fingerbed.oss-cn-chengdu.aliyuncs.com/CSDN/202311031104822.png")
+    no-repeat center;
+  background-size: 150px 120px;
+  transition: background-size 3s;
 }
 #CarName {
   position: absolute;
@@ -173,10 +218,11 @@ export default {
   font-size: 14px;
 }
 .block div {
+  overflow: hidden;
   position: absolute;
   left: 117%;
   bottom: 10%;
-  width: 70px;
+  width: 76px;
   height: 14px;
 }
 #number {

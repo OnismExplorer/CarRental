@@ -1,20 +1,18 @@
 <template>
   <div class="order-container">
     <div class="order-list">
-      <div class="list-item" v-for="(item, index) in list" :key="index">
+      <div class="list-item" v-for="(item, index) in carList" :key="index">
         <el-button
           type="danger"
           icon="el-icon-close"
           plain
           class="cancel"
-          @click="cancel(item.id)"
+          @click="cancel(index)"
         ></el-button>
         <div
           id="car-picture"
           :style="{ backgroundImage: 'url(' + item.avatar + ')' }"
-        >
-          图片
-        </div>
+        ></div>
         <span id="CarName">{{
           item.brand + "-" + item.model + "-" + item.illustrate
         }}</span>
@@ -32,7 +30,8 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            @blur="changeDate(index,item.day)"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            @blur="changeDate(index)"
           >
           </el-date-picker>
         </div>
@@ -53,36 +52,37 @@
         <el-button
           type="primary"
           class="confirm"
-          @click="confirm(item.id, item.start, item.end)"
+          
+          v-model="item.day"
+          @click="confirm(index)"
           >确认</el-button
         >
       </div>
     </div>
 
-    <bottom
-      ><div class="bottom-tab">
+    <div class="bottom">
+      <div class="bottom-tab">
         <div class="shop-img">图片</div>
         <span id="tips">
           (若超出规定时间换车,则每超出日期的日租金按正常租金的1.5倍支付!!!)</span
         >
         <div class="total-amount">
           总金额:
-          <div>1000</div>
+          <div>{{ amount }}</div>
         </div>
         <div class="vip-total-amount">
           会员价:
           <div>10</div>
         </div>
-
         <el-button type="danger" id="pay">支付订单</el-button>
-      </div></bottom
-    >
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { removeOrder, getOrderById, changeOrder } from "@/api/details";
 import { getDataById } from "@/api/registration";
+import { getOrderById, removeOrder, changeOrder } from "@/api/individualOrder";
 
 export default {
   data() {
@@ -90,13 +90,29 @@ export default {
       list: [
         {
           id: "",
+          uid: "",
+          vehicleId: "",
           start: "",
           end: "",
+          illustrate: "",
+          returnTime: "",
+          totalCost: 0,
+          status: 0,
+        },
+      ],
+      carList: [
+        {
+          id: "",
           brand: "",
           model: "",
-          dailyRate: "",
+          license: "",
+          type: 0,
+          dailyRate: 0,
+          illustrate: "",
           avatar: "",
-          available: "",
+          available: 0,
+          inventory: 0,
+          day:""
         },
       ],
       amount: 0,
@@ -107,50 +123,67 @@ export default {
   },
   methods: {
     fetchData() {
-      // 需要获取用户uid
+      let uid = this.$store.getters.id;
       getOrderById(uid).then((res) => {
         this.list = res;
-      });
-      this.list.forEach((obj) => {
-        obj.day = '';
-        getDataById(obj.id).then((res) => {
-          obj = { ...res };
+        this.carList.shift()
+        this.list.forEach((obj) => {
+          getDataById(obj.vehicleId)
+            .then((res) => {
+              let car = res;
+              car.day = "";
+              this.carList.push(car);
+              // obj = { ...res };
+            })
+            .then(() => {
+              this.calAmount();
+            });
         });
       });
     },
-    cancel(id) {
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+    cancel(index) {
+      console.log(this.list[index].id);
+      this.$confirm("此操作将永久删除该订单, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          return removeOrder(id);
+          return removeOrder(this.list[index].id);
         })
         .then((res) => {
           this.fetchData();
           this.$message.success(res.message);
         });
-      this.fetchData();
     },
-    confirm(id, start, end) {
-      changeOrder({ id, start, end }).then((res) => {
-        this.$message({
-          type: "success",
-          message: res.message,
-        });
+    confirm(index) {
+      let id = this.list[index].id;
+      let start = this.list[index].start;
+      let end = this.list[index].end;
+      changeOrder({ id, start, end }).then(() => {
+        this.fetchData();
+      }, err => {
+        console.log(err);
       });
-      this.fetchData();
+     
     },
-    changeDate(index,day) {
-      this.list[index].start = day[0];
-      this.list[index].end = day[1];
+    changeDate(index) {
+      this.list[index].start = this.carList[index].day[0];
+      this.list[index].end = this.carList[index].day[1];
+    },
+    calAmount() {
+      this.carList.forEach((item) => {
+        this.amount += item.dailyRate;
+      });
     },
   },
 };
 </script>
 
 <style scoped>
+.order-container {
+  height: 1000px;
+}
 .order-list {
   width: 100%;
 }
@@ -164,6 +197,7 @@ export default {
   display: inline-block;
   width: 16%;
   height: 100%;
+  margin-left: -30px;
   background: url("https://fingerbed.oss-cn-chengdu.aliyuncs.com/CSDN/202311031104822.png")
     no-repeat center;
   background-size: 150px 150px;
@@ -250,13 +284,14 @@ export default {
   right: 10px;
   bottom: 10px;
 }
-bottom {
+.bottom {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 15%;
   border: rgb(178, 177, 177) solid 1px;
+  background-color: #fff;
 }
 .bottom-tab {
   position: relative;
@@ -299,7 +334,7 @@ bottom {
 }
 .vip-total-amount {
   position: absolute;
-  left: 34%;
+  left: 37%;
   bottom: 20px;
   color: rgb(217, 68, 68);
   font-weight: 700;

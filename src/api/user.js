@@ -34,27 +34,29 @@ export function getUserData({ key, pageNum, pageSize }) {
 export function getUserById(id) {
   return request({
     url: `/admin/user/${id}`,
-    method:'get'
-  })
+    method: "get",
+  });
 }
 
 export function removeById(id) {
   return request({
     url: `/admin/delete/user/${id}`,
-    method:'delete'
-  })
+    method: "delete",
+  });
 }
 
-export function addUser() {
+export function upgradeUser(user) {
   return request({
-    url: '/admin/save/user',
-    method:'post'
-  })
+    url: "/admin/update/user",
+    method: "put",
+    data:user
+  });
 }
 
-export function upgradeUser() {
+export function addUser(user) {
   return request({
-    url: '/admin/update/user',
-    method:'put'
-  })
+    url: "/admin/save/user",
+    method: "post",
+    data:user
+  });
 }

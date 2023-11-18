@@ -69,7 +69,7 @@
     },
     methods: {
       retreat() {
-        this.$router.push({ path: "/" });
+        this.$router.push({ path: "/login" });
       },
       onSubmit() {
         addUser(this.form).then((res) => {
@@ -78,7 +78,7 @@
             message: res.message,
           });
         });
-        this.$router.push({ path: "/" });
+        this.$router.push({ path: "/login" });
       },
       handleAvatarSuccess(res, file) {
         this.form.imageUrl = URL.createObjectURL(file.raw);

@@ -9,7 +9,7 @@
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
         >
-          <img v-if="form.avatar" :src="form.avatar" class="avatar" />
+          <img v-if="form.avater" :src="form.avater" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
@@ -17,16 +17,16 @@
         <el-input v-model="form.userName" style="width: 400px"></el-input>
       </el-form-item>
       <el-form-item label="昵称" prop="nickname">
-        <el-input v-model="form.model" style="width: 400px"></el-input>
+        <el-input v-model="form.nickname" style="width: 400px"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.available" style="width: 300px"></el-input>
+        <el-input v-model="form.password" style="width: 300px"></el-input>
       </el-form-item>
       <el-form-item label="用户类型" prop="type">
-        <el-input v-model="form.dailyRate" style="width: 100px"></el-input>
+        <el-input v-model="form.type" style="width: 100px"></el-input>
       </el-form-item>
       <el-form-item label="地址" prop="address">
-        <el-input v-model="form.dailyRate" style="width: 100px"></el-input>
+        <el-input v-model="form.address" style="width: 100px"></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -49,10 +49,11 @@ export default {
         userName: "",
         password: "",
         nickname: "",
-        avatar: "",
+        avater: "",
         email: "",
-        type: 0,
         address: "",
+        type: 2,
+        state: 0,
       },
       rules: {
         userName: [
@@ -79,13 +80,13 @@ export default {
       this.$router.push({ path: "/admin/users" });
     },
     onSubmit() {
-      addUser(this.form).then((res) => {
-        this.$message({
-          type: "success",
-          message: res.message,
-        });
+      addUser(this.form).then(() => {
+        // this.$message({
+        //   type: "success",
+        //   message: res.message,
+        // });
+        this.$router.push({ path: "/admin/users" });
       });
-      this.$router.push({ path: "/admin/users" });
     },
     handleAvatarSuccess(res, file) {
       this.form.imageUrl = URL.createObjectURL(file.raw);
@@ -136,4 +137,3 @@ export default {
   display: block;
 }
 </style>
-

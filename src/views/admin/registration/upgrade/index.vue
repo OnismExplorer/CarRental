@@ -20,14 +20,17 @@
       <el-form-item label="车辆车系" prop="model">
         <el-input v-model="form.model" style="width: 400px"></el-input>
       </el-form-item>
-      <el-form-item label="车辆数量" prop="num">
+      <el-form-item label="车辆数量" prop="available">
         <el-input v-model="form.available" style="width: 100px"></el-input>
       </el-form-item>
-      <el-form-item label="日租金" prop="rentdaily">
+      <el-form-item label="日租金" prop="dailyRate">
         <el-input v-model="form.dailyRate" style="width: 100px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleUpgrade" style="margin-bottom: 20px"
+        <el-button
+          type="primary"
+          @click="handleUpgrade"
+          style="margin-bottom: 20px"
           >完成修改</el-button
         >
         <el-button @click="retreat">取消</el-button>
@@ -46,9 +49,12 @@ export default {
         id: "",
         brand: "",
         model: "",
-        dailyRate: "",
+        license: "",
+        type: 0,
+        dailyRate: 0,
+        illustrate: "",
         avatar: "",
-        available: "",
+        available: 0,
       },
       rules: {
         brand: [
@@ -59,13 +65,13 @@ export default {
           { required: true, message: "请输入车型名称", trigger: "blur" },
           { min: 1, message: "不能为空！", trigger: "blur" },
         ],
-        num:[
+        available: [
           { required: true, message: "请输入车辆数量", trigger: "blur" },
-          { min: 1, max:99,message: "不能为零！", trigger: "blur" },
+          { min: 1, max: 99, message: "不能为零！", trigger: "blur" },
         ],
-        rentdaily:[
+        dailyRate: [
           { required: true, message: "请输入车辆数量", trigger: "blur" },
-          { min: 1,message: "不能为零！", trigger: "blur" },
+          { min: 1, message: "不能为零！", trigger: "blur" },
         ],
       },
     };
@@ -95,16 +101,33 @@ export default {
     fetchDataById(id) {
       getDataById(id).then((res) => {
         this.form = res;
+        console.log(this.form);
       });
     },
     handleUpgrade() {
-      upgradeCar(this.form).then((res) => {
-        this.$message({
-          type: "success",
-          message: res.message,
-        });
-      });
-      this.router.push({ path: "/admin/registration" });
+      // let m = {
+      //   id: this.form.id,
+      //   brand: this.form.brand,
+      //   model: this.form.model,
+      //   license: this.form.license,
+      //   type: this.form.type,
+      //   dailyRate: this.form.dailyRate,
+      //   illustrate: this.form.illustrate,
+      //   avatar: this.form.avatar,
+      //   available: this.form.available,
+      // };
+      upgradeCar(this.form).then(
+        () => {
+          // this.$message({
+          //   type: "success",
+          //   message: res.message,
+          // });
+          this.$router.push({ path: "/admin/registration" });
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
     },
   },
 };

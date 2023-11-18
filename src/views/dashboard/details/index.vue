@@ -29,6 +29,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           @blur="changeDate"
+          value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
       </div>
@@ -36,7 +37,7 @@
         租用数量
         <el-input-number
           size="mini"
-          v-model="num4"
+          v-model="num"
           class="num"
         ></el-input-number>
       </div>
@@ -60,11 +61,12 @@ export default {
   data() {
     return {
       form: {
-        id: "",
+        id: 0,
         avatar: "",
         dailyRate: "",
         available: "",
       },
+      num: 0,
       day: "",
       start: "",
       end: "",
@@ -80,20 +82,24 @@ export default {
       });
     },
     addOrder() {
-      createOrder({
-        vehicleId: form.id,
-        start: this.start,
-        end: this.end,
-      }).then((res) => {
-        this.$message({
-          type: "success",
-          message: res.message,
+      if (this.num != 0 && this.day != "") {
+        createOrder({
+          vehicleId: this.form.id,
+          start: this.start,
+          end: this.end,
+          illustrate: "",
+        }).then(() => {
+          // this.$message({
+          //   type: "success",
+          //   message: res.message,
+          // });
+          this.$router.push({ path: "/dashboard" });
         });
-      });
+      }
     },
     changeDate() {
-      this.start = this.day[0];
-      this.end = this.day[1];
+      this.start = this.day[0] + "";
+      this.end = this.day[1] + "";
     },
   },
 };

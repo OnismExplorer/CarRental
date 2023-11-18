@@ -21,7 +21,7 @@
             d="M4 15h2v5h12V4H6v5H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6zm6-4V8l5 4-5 4v-3H2v-2h8z"
           ></path>
         </svg>
-        <button class="form_heading">注册</button>
+        <button class="form_heading" @click="toSign">注册</button>
       </div>
       <div class="field" prop="username">
         <label for="username">用户名</label>
@@ -144,6 +144,11 @@ export default {
         }
       });
     },
+    toSign() {
+      
+      this.$router.push({ path: '/sign' })
+      console.log("123");
+    }
   },
 };
 </script>

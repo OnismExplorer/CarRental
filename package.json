@@ -5,7 +5,7 @@
   "author": "Pan <panfree23@gmail.com>",
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
-    "build:prod": "NODE_ENV=production node build/build.js",
+    "build:prod": " set NODE_ENV=production && node build/index.js",
     "build:sit": "NODE_ENV=sit node build/build.js",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
@@ -19,6 +19,7 @@
     "core-js": "3.6.5",
     "element-ui": "2.13.2",
     "js-cookie": "2.2.0",
+    "nginx": "^1.0.8",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
@@ -59,5 +60,10 @@
     "node": ">=8.9",
     "npm": ">= 3.0.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "tests"
+  },
+  "keywords": []
 }

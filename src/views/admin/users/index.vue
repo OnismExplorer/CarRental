@@ -6,6 +6,9 @@
       >
       <el-table :data="tableData" style="width: 100%" height="400">
         <el-table-column fixed prop="avater" label="头像" width="150">
+          <template slot-scope="scope">
+            <el-avatar :src="scope.row.avater"></el-avatar>
+          </template>
         </el-table-column>
         <el-table-column fixed prop="id" label="ID" width="150">
         </el-table-column>
@@ -18,12 +21,14 @@
         <el-table-column prop="email" label="邮箱" width="120">
         </el-table-column>
         <el-table-column label="用户状态" width="160">
-          <el-switch
-            v-model="tableData.user_mode"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-          >
-          </el-switch>
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.state"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+            >
+            </el-switch>
+          </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="130">
           <template slot-scope="scope">
@@ -69,18 +74,18 @@ export default {
     return {
       key: "",
       page: 1,
-      pageSize: 6,
+      pageSize: 4,
       pageCount: 0,
       tableData: [
         {
-          user_mode: true,
           avater: "",
           id: "2016",
           username: "王小虎",
           nickname: "上海",
-          type: "",
+          type: 0,
           address: "上海市普陀区金沙江路 1518 弄",
           email: 200333,
+          state:true
         },
       ],
     };
@@ -117,7 +122,7 @@ export default {
     },
     handleDele(row) {
       let id = row.id;
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -131,8 +136,8 @@ export default {
         });
     },
     toCreate() {
-      this.$router.push({name:'adduser'})
-    }
+      this.$router.push({ name: "adduser" });
+    },
   },
 };
 </script>
@@ -162,8 +167,8 @@ export default {
   margin-left: 0;
   margin-top: 5px;
 }
-.createBtn{
-  float:right;
+.createBtn {
+  float: right;
   margin-right: 65px;
   margin-top: 10px;
 }

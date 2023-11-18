@@ -9,7 +9,7 @@
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
         >
-          <img v-if="form.avatar" :src="form.avatar" class="avatar" />
+          <img v-if="form.avater" :src="form.avater" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           <span class="tips">(点击图片可修改)</span>
         </el-upload>
@@ -18,16 +18,16 @@
         <el-input v-model="form.userName" style="width: 400px"></el-input>
       </el-form-item>
       <el-form-item label="昵称" prop="nickname">
-        <el-input v-model="form.model" style="width: 400px"></el-input>
+        <el-input v-model="form.nickname" style="width: 400px"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.available" style="width: 300px"></el-input>
+        <el-input v-model="form.password" style="width: 300px"></el-input>
       </el-form-item>
       <el-form-item label="用户类型" prop="type">
-        <el-input v-model="form.dailyRate" style="width: 100px"></el-input>
+        <el-input v-model="form.type" style="width: 100px"></el-input>
       </el-form-item>
       <el-form-item label="地址" prop="address">
-        <el-input v-model="form.dailyRate" style="width: 100px"></el-input>
+        <el-input v-model="form.address" style="width: 100px"></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -50,10 +50,11 @@ export default {
   data() {
     return {
       form: {
+        id:"",
         userName: "",
         password: "",
         nickname: "",
-        avatar: "",
+        avater: "",
         email: "",
         type: 0,
         address: "",
@@ -103,14 +104,16 @@ export default {
     fetchData(id) {
       getUserById(id).then((res) => {
         this.form = res;
+      }, err => {
+        console.log(err);
       });
     },
     handleUpgrade() {
-      upgradeUser(this.form).then((res) => {
-        this.$message({
-          type: "success",
-          message: res.message,
-        });
+      upgradeUser(this.form).then(() => {
+        // this.$message({
+        //   type: "success",
+        //   message: res.message,
+        // });
       });
       this.$router.push({path: "/admin/users"})
     },
