@@ -71,7 +71,7 @@ public class OrderController {
     @Operation(summary = "根据用户id获取订单详情")
     @GetMapping("/details/{uid}")
     public Result<List<OrderVO>> getOrderDetailsByUid(@PathVariable String uid){
-        List<Order> orders = orderService.lambdaQuery().eq(Order::getUid, uid).list();
+        List<Order> orders = orderService.lambdaQuery().notIn(Order::getStatus,3).eq(Order::getUid, uid).list();
         List<OrderVO> result = new ArrayList<>();
         orders.forEach(order -> result.add(Order.toVo(order)));
         return Result.success(result);
