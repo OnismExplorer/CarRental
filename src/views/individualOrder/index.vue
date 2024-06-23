@@ -19,7 +19,7 @@
 
         <div id="car-stores">
           库存:
-          <div>{{ item.available }}</div>
+          <div>1</div>
         </div>
 
         <div class="block">
@@ -35,12 +35,6 @@
           >
           </el-date-picker>
         </div>
-
-        <!-- <div id="number">
-          租用数量
-          
-        </div> -->
-
         <div id="amount">
           价格：
           <div>{{ item.dailyRate }}</div>
@@ -72,7 +66,7 @@
         </div>
         <div class="vip-total-amount">
           会员价:
-          <div>10</div>
+          <div>400</div>
         </div>
         <el-button type="danger" id="pay">支付订单</el-button>
       </div>
@@ -110,7 +104,7 @@ export default {
           dailyRate: 0,
           illustrate: "",
           avatar: "",
-          available: 0,
+          available: 1,
           inventory: 0,
           day:""
         },

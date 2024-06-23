@@ -1,6 +1,6 @@
 <template>
   <div class="user-container">
-    <div class="userinfo">
+    <div class="userinfo" >
       <el-avatar
         id="avatar"
         :size="95"
@@ -34,7 +34,7 @@
 
         <div id="number">
           租用数量:
-          <div>XXX</div>
+          <div>1</div>
         </div>
 
         <div id="amount">
@@ -161,17 +161,19 @@ export default {
 .userinfo {
   display: inline-block;
   position: relative;
-  top: -179px;
+  top: -200px;
   width: 30%;
   height: 420px;
+  margin-top: 30%;
   margin-right: 20px;
   background-color: rgb(255, 255, 255);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.32), 0 0 6px rgba(0, 0, 0, 0.14);
 }
 .orderinfo {
   display: inline-block;
+  position: relative;
+  top: -179px;
   width: 68%;
-  
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.32), 0 0 6px rgba(0, 0, 0, 0.1);
 }
 
