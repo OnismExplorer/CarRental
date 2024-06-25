@@ -21,7 +21,7 @@
 </template>
 
 <script>
-
+// 404页面
 export default {
   name: 'Page404',
   computed: {

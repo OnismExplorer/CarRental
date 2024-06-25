@@ -21,7 +21,6 @@
           库存:
           <div>1</div>
         </div>
-
         <div class="block">
           <span class="demonstration">租用日期</span>
           <el-date-picker
